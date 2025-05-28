@@ -1,0 +1,34 @@
+package pf.yozzman.risk;
+
+public class Pays {
+	private String nom;
+	private String voisinNord;
+    private String voisinSud;
+    private String voisinEst;
+    private String voisinOuest;
+
+	public Pays (String name, String voisinNord, String voisinSud, String voisinEst, String voisinOuest) {
+		this.nom = name;
+        this.voisinNord = voisinNord;
+        this.voisinSud = voisinSud;
+        this.voisinOuest = voisinOuest;
+        this.voisinEst = voisinEst;
+	}
+	
+	public String getNom() {
+		return this.nom;
+	}
+    
+    public String getVoisinNord() {
+        return this.voisinNord;
+    }
+    public String getVoisinSud() {
+        return this.voisinSud;
+    }
+    public String getVoisinEst() {
+        return this.voisinEst;
+    }
+    public String getVoisinOuest() {
+        return this.voisinOuest;
+    }
+}
