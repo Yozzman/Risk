@@ -3,17 +3,18 @@ import java.util.List;
 
 public class Continent {
     private String name;
-    
-    private static List<Pays> pays = new ArrayList<Pays>();
-	public static List<Pays> getPays() {
-		return Continent.pays;
-	}
-    
-    public Continent (String name) {
+    private List<Pays> listepays = new ArrayList<Pays>();
+	
+	public Continent (String name) {
 		this.name = name;
 	}
 	
 	public String getName() {
 		return this.name;
 	}
+
+	public List<Pays> getPays() {
+		return this.listepays;
+	}
+	
 }
