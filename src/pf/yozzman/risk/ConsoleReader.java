@@ -1,3 +1,5 @@
+package pf.yozzman.risk;
+
 import java.util.Scanner;
 
 public class ConsoleReader {

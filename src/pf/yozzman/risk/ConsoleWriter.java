@@ -1,3 +1,5 @@
+package pf.yozzman.risk;
+
 public class ConsoleWriter {
 
 	public static void clear() {

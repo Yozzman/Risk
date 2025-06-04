@@ -7,8 +7,13 @@ public class Pays {
     private String voisinEst;
     private String voisinOuest;
 
-	public Pays (String name, String voisinNord, String voisinSud, String voisinEst, String voisinOuest) {
-		this.nom = name;
+	public Pays (String nom,
+	        String voisinNord,
+	        String voisinSud,
+	        String voisinEst,
+	        String voisinOuest
+	    ) {
+	    this.nom = nom;
         this.voisinNord = voisinNord;
         this.voisinSud = voisinSud;
         this.voisinOuest = voisinOuest;
