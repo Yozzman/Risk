@@ -20,6 +20,9 @@ class Pays {
 	public void setProprietaire (Joueur joueur) {
 		this.proprietaire = joueur;
 	}
+	public void setTroupes (int troupes) {
+		this.troupes = troupes;
+	}
 }
 
 public class Jeu {
@@ -63,6 +66,7 @@ public class Jeu {
 	static void assignerPays() {
         for (int i = 0; i < carte.size(); i++) {
             carte.get(i).setProprietaire(ListeJoueurs.get(i%2));
+            carte.get(i).setTroupes(5);
         }
     }
 }
