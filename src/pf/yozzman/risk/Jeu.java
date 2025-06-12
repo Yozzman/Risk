@@ -36,8 +36,8 @@ public class Jeu {
 	public static void main(String[] args) {
 		initialiserCarte();
 		assignerPays();
-		ListeJoueurs.add(new Joueur("Joueur1"));
-		ListeJoueurs.add(new Joueur("Joueur2"));
+		ListeJoueurs.add(new Joueur(joueurs[0]));
+		ListeJoueurs.add(new Joueur(joueurs[1]));
 	}
 
 	static void initialiserCarte() {
