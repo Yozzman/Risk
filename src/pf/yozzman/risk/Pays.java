@@ -6,18 +6,10 @@ public class Pays {
     private String voisinSud;
     private String voisinEst;
     private String voisinOuest;
+    private int nombreTroupe = 0;
 
-	public Pays (String nom,
-	        String voisinNord,
-	        String voisinSud,
-	        String voisinEst,
-	        String voisinOuest
-	    ) {
+	public Pays (String nom) {
 	    this.nom = nom;
-        this.voisinNord = voisinNord;
-        this.voisinSud = voisinSud;
-        this.voisinOuest = voisinOuest;
-        this.voisinEst = voisinEst;
 	}
 	
 	public String getNom() {
@@ -35,5 +27,9 @@ public class Pays {
     }
     public String getVoisinOuest() {
         return this.voisinOuest;
+    }
+    
+    public boolean possedeTroupe() {
+    	return nombreTroupe <= 0;
     }
 }
