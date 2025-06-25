@@ -45,7 +45,12 @@ public class Pays {
     }
 
     private List<Pays> ListePays = new ArrayList<>();
-	    public void initialiserPays() {
+    
+    public List<Pays> getListePays() {
+        return this.ListePays;
+    }
+    
+    public void initialiserPays() {
 	    ListePays.add(new Pays("Alaska", null, "Amérique du Nord"));
         ListePays.add(new Pays("Etat de L'Ouest", null, "Amérique du Nord"));
         ListePays.add(new Pays("Etat de L'Est", null, "Amérique du Nord"));
