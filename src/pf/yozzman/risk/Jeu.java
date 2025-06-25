@@ -58,7 +58,7 @@ public class Jeu {
 			for (int j = 0; j < nombrePaysAJoueur && indexPays < listePays.size(); j++) {
 				Pays pays = listePays.get(indexPays);
 				pays.proprietaire = joueur.getNom();
-				System.out.println("- " + pays.getNom() + " (" + pays.getNomContinent() + ")");
+				System.out.println("- " + pays.getNom());
 				indexPays++;
 			}
 		}
