@@ -26,4 +26,10 @@ public class ListeJoueur<T extends Joueur> extends AbstractList<T> {
 	public void ajouterJoueur(Joueur Joueur) {
 		this.Joueur.add((T) Joueur);
 	}
+	
+	public void afficherNomJoueur() {
+		for (int i = 0; i < Joueur.size(); i++) {
+	        System.out.println("Nom du joueur " + (i+1) + " : " + Joueur.get(i).getNom());	
+		}
+	}
 }

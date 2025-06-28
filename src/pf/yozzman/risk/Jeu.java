@@ -9,18 +9,17 @@ public class Jeu {
 
 	static ListeJoueur<Joueur> listeJoueur = new ListeJoueur<>();
 	
-	static List<Pays> carte = new ArrayList<>();
+	static List<Pays> listePays = new ArrayList<>();	
 	
 	public static void main(String[] args) {
 		
 		int nombreJoueur = demandeUtilisateur.demanderNombreJoueur();
-
-
-		for(int i = 1; i <= nombreJoueur; i++) {
-			Joueur joueurCreer = new Joueur();
-			joueurCreer.setNom(demandeUtilisateur.demanderNomJoueur(joueurCreer));
-			listeJoueur.ajouterJoueur(joueurCreer);
-		}		
+		
+		demandeUtilisateur.ajouterJoueur(nombreJoueur, listeJoueur);
+		
+		listeJoueur.afficherNomJoueur();
+		
+		
 	}
 
 }

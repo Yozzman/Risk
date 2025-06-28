@@ -6,7 +6,7 @@ public class ConsoleReader {
 	
 	private static Scanner scanner = new Scanner(System.in);
 	
-	public Integer demanderNombreJoueur() {
+	public int demanderNombreJoueur() {
 		Integer nombreFinal = null;
 
 		while (nombreFinal == null) {
@@ -32,7 +32,9 @@ public class ConsoleReader {
                 System.out.println("Entrée invalide. Veuillez entrer un nombre entier.");
             }
 		}
+		
 		return nombreFinal;
+		
 	}
 	
 	public String demanderNomJoueur(Joueur joueur) {
@@ -55,10 +57,14 @@ public class ConsoleReader {
 	}
 
 	public void ajouterJoueur(int nombreJoueur, ListeJoueur<Joueur> listeJoueur) {
-		for (int i = 1; i <= nombreJoueur; i++) {
-        Joueur joueurCreer = new Joueur();
-        String nom = demanderNomJoueur(joueurCreer);
-        joueurCreer.setNom(nom);
-        listeJoueur.ajouterJoueur(joueurCreer);
+		
+			for (int i = 1; i <= nombreJoueur; i++) {
+				
+		        Joueur joueurCreer = new Joueur();
+		        String nom = demanderNomJoueur(joueurCreer);
+		        joueurCreer.setNom(nom);
+		        listeJoueur.ajouterJoueur(joueurCreer);
+	        
+			}
 	}
 }
