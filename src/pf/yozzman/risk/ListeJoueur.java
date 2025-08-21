@@ -4,32 +4,27 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListeJoueur<T extends Joueur> extends AbstractList<T> {
+public class ListeJoueur extends AbstractList<Joueur> {
 	
-	List<T> Joueur = new ArrayList<T>(); 
+	private List<Joueur> joueurs = new ArrayList<>(); 
 	
-	public ListeJoueur() {
-		
-	}
+	public Joueur get(int index) {
+        return joueurs.get(index);
+    }
+
+	@Override
+    public int size() {
+        return joueurs.size();
+    }
 	
 	@Override
-	public int size() {
-		return Joueur.size();
-	}
-	
-	@Override
-	public T get(int index) {
-		return Joueur.get(index);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void ajouterJoueur(Joueur Joueur) {
-		this.Joueur.add((T) Joueur);
-	}
+	public boolean add(Joueur joueur) {
+        return joueurs.add(joueur);
+    }
 	
 	public void afficherNomJoueur() {
-		for (int i = 0; i < Joueur.size(); i++) {
-	        System.out.println("Nom du joueur " + (i+1) + " : " + Joueur.get(i).getNom());	
+		for (int i = 0; i < joueurs.size(); i++) {
+	        ConsoleWriter.println("Nom du joueur " + (i+1) + " : " + joueurs.get(i).getNom());	
 		}
 	}
 }

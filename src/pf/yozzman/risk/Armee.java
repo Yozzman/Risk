@@ -1,11 +1,12 @@
 package pf.yozzman.risk;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Armee {
 	private String nom;
 	private String nomJoueur;
-	private List<Troupe> listeTroupe;
+	private List<Troupe> listeTroupe = new ArrayList<>();
 	
 	public Armee(String nom, String nomJoueur) {
 		this.nom = nom;
@@ -23,4 +24,9 @@ public class Armee {
 	public List<Troupe> getListeTroupe() {
 		return this.listeTroupe;
 	}
+
+	public void ajouterTroupe(Troupe troupe) {
+        this.listeTroupe.add(troupe);
+    }
+	
 }

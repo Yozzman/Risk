@@ -11,7 +11,7 @@ public class ConsoleReader {
 
 		while (nombreFinal == null) {
 
-            System.out.print("Entrez le nombre de joueurs (entre 2 et 5) : ");
+            ConsoleWriter.print("Entrez le nombre de joueurs (entre 2 et 5) : ");
 
 			try {
 
@@ -21,15 +21,15 @@ public class ConsoleReader {
                     nombreFinal = entree;
                 } else {
 					if ( entree < 2) {
-                    System.out.println("Il doit y avoir au moins 2 joueurs.");
+                    ConsoleWriter.println("Il doit y avoir au moins 2 joueurs.");
 					};
 					if ( entree > 5) {
-                    System.out.println("Il doit y avoir au maximum 5 joueurs.");
+                    ConsoleWriter.println("Il doit y avoir au maximum 5 joueurs.");
 					};
                 }
 
             } catch (NumberFormatException e) {
-                System.out.println("Entrée invalide. Veuillez entrer un nombre entier.");
+                ConsoleWriter.println("Entrée invalide. Veuillez entrer un nombre entier.");
             }
 		}
 		
@@ -37,34 +37,24 @@ public class ConsoleReader {
 		
 	}
 	
-	public String demanderNomJoueur(Joueur joueur) {
-		String nomFinal = null;
-		while (nomFinal == null) {
-					
-			System.out.print("Nom du joueur " + joueur.getId() + " : ");
-			String nomEntrer = scanner.next();
-			
-			if (nomEntrer == null || nomEntrer.trim().isEmpty()) {
-				System.out.print("Veuillez réessayer");	
-			}
-			
-			if (nomEntrer != null) {
-				nomFinal = nomEntrer;
-			} 
+	public String demanderNomJoueur(int numJoueur) {
+		String nom = null;
+		while (nom == null || nom.trim().isEmpty()) {
+			ConsoleWriter.print("Nom du joueur " + (numJoueur) + " : ");
+			nom = scanner.nextLine().trim();
 		}
 		
-		return nomFinal;
+		return nom;
 	}
 
-	public void ajouterJoueur(int nombreJoueur, ListeJoueur<Joueur> listeJoueur) {
-		
-			for (int i = 1; i <= nombreJoueur; i++) {
-				
-		        Joueur joueurCreer = new Joueur();
-		        String nom = demanderNomJoueur(joueurCreer);
-		        joueurCreer.setNom(nom);
-		        listeJoueur.ajouterJoueur(joueurCreer);
-	        
-			}
-	}
+	public ListeJoueur creerJoueurs(int nbJoueurs) {
+        ListeJoueur liste = new ListeJoueur();
+        for (int i = 0; i < nbJoueurs; i++) {
+            Joueur joueur = new Joueur();
+            joueur.setNom(demanderNomJoueur(i + 1));
+            liste.add(joueur);
+        }
+        return liste;
+    }
+	
 }

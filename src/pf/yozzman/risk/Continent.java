@@ -6,17 +6,21 @@ import java.util.List;
 public class Continent {
 	
 	private String nom;
-	private List<Pays> ListePays = new ArrayList<Pays>();
+	private List<Pays> listePays = new ArrayList<>();
 	
 	public Continent (String nom) {
 		this.nom = nom;
 	}
 	
+	public String getNom() {
+        return nom;
+    }
+
 	public List<Pays> getPays() {
-		return this.ListePays;
+		return this.listePays;
 	}
 	
-	public String getNom() {
-		return this.nom;
-	}
+	public void addPays(Pays pays) {
+        this.listePays.add(pays);
+    }
 }
