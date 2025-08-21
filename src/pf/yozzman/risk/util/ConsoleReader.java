@@ -1,6 +1,9 @@
-package pf.yozzman.risk;
+package pf.yozzman.risk.util;
 
 import java.util.Scanner;
+
+import pf.yozzman.risk.model.Joueur;
+import pf.yozzman.risk.model.ListeJoueur;
 
 public class ConsoleReader {
     private static Scanner scanner = new Scanner(System.in);

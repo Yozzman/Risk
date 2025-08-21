@@ -1,8 +1,10 @@
-package pf.yozzman.risk;
+package pf.yozzman.risk.model;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
+
+import pf.yozzman.risk.util.ConsoleWriter;
 
 public class ListeJoueur extends AbstractList<Joueur> {
     private List<Joueur> joueurs = new ArrayList<>();

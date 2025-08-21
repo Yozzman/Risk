@@ -1,4 +1,8 @@
-package pf.yozzman.risk;
+package pf.yozzman.risk.phase;
+
+import pf.yozzman.risk.model.Carte;
+import pf.yozzman.risk.model.Joueur;
+import pf.yozzman.risk.util.ConsoleWriter;
 
 public class PhaseRenforts {
     private final Carte carte;

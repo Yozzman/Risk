@@ -1,4 +1,4 @@
-package pf.yozzman.risk;
+package pf.yozzman.risk.util;
 
 public class ConsoleWriter {
     public static void clear() {

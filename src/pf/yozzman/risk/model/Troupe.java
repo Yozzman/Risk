@@ -1,4 +1,4 @@
-package pf.yozzman.risk;
+package pf.yozzman.risk.model;
 
 public class Troupe {
     private String nom;

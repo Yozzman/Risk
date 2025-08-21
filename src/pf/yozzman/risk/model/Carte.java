@@ -1,10 +1,13 @@
-package pf.yozzman.risk;
+package pf.yozzman.risk.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import pf.yozzman.risk.util.ConsoleWriter;
+
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -229,15 +232,6 @@ public class Carte {
         }
     }
 
-    public void afficherCarte() {
-        ConsoleWriter.clear();
-        for (Pays pays : listePays) {
-            String proprietaire = pays.getProprietaire() == null ? "--" : pays.getProprietaire().getNom();
-            ConsoleWriter.println(pays.getNom() + " (Proprietaire : " + proprietaire +
-                    ", Troupes : " + pays.getNombreTroupe() + ")");
-        }
-    }
-
     private String padRight(String s, int n) {
 		if (s == null) s = "";
 		if (s.length() >= n) return s.substring(0, n);
@@ -246,8 +240,7 @@ public class Carte {
 		return sb.toString();
 	}
 
-	public void afficherMiniCarte() {
-		ConsoleWriter.clear();
+	public void afficherCarte() {
 		ConsoleWriter.println("=== CARTE RISK (noms complets, propriétaire, troupes) ===");
 		// Déterminer largeur max pour aligner proprement
 		int maxNom = 0, maxProp = 0;
@@ -288,12 +281,11 @@ public class Carte {
         return indexPays.get(nom);
     }
 
-    // Combat simple avec dés
     public boolean attaquer(Pays attaquant, Pays defense, Random rnd) {
         if (attaquant.getProprietaire() == null || defense.getProprietaire() == null) return false;
         if (attaquant.getProprietaire() == defense.getProprietaire()) return false;
         if (!attaquant.estVoisin(defense)) return false;
-        if (attaquant.getNombreTroupe() < 2) return false; // besoin d'au moins 2 pour attaquer
+        if (attaquant.getNombreTroupe() < 2) return false; 
 
         int desAtt = Math.min(3, attaquant.getNombreTroupe() - 1);
         int desDef = Math.min(2, defense.getNombreTroupe());
@@ -318,7 +310,7 @@ public class Carte {
         }
 
         if (defense.getNombreTroupe() <= 0) {
-            // Conquête
+            
             Joueur jAtt = attaquant.getProprietaire();
             Joueur jDef = defense.getProprietaire();
             jDef.getPaysPossedes().remove(defense);
@@ -326,7 +318,6 @@ public class Carte {
             jAtt.addPaysPossede(defense);
             defense.setPossedeJoueur(true);
 
-            // Déplacer au moins 1 troupe
             int deplace = Math.min(desAtt, attaquant.getNombreTroupe() - 1);
             deplace = Math.max(deplace, 1);
             attaquant.setNombreTroupe(attaquant.getNombreTroupe() - deplace);

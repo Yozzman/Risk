@@ -1,6 +1,12 @@
-package pf.yozzman.risk;
+package pf.yozzman.risk.phase;
 
 import java.util.Random;
+
+import pf.yozzman.risk.model.Carte;
+import pf.yozzman.risk.model.Joueur;
+import pf.yozzman.risk.model.Pays;
+import pf.yozzman.risk.util.ConsoleReader;
+import pf.yozzman.risk.util.ConsoleWriter;
 
 public class PhaseAttaque {
 
@@ -31,7 +37,7 @@ public class PhaseAttaque {
             }
 
             carte.attaquer(pFrom, pTo, rnd);
-            carte.afficherMiniCarte();
+            carte.afficherCarte();
 
             if (carte.estVictoire(joueur)) {
                 ConsoleWriter.println("Victoire de " + joueur.getNom() + " !");

@@ -1,4 +1,4 @@
-package pf.yozzman.risk;
+package pf.yozzman.risk.model;
 
 import java.util.ArrayList;
 import java.util.List;

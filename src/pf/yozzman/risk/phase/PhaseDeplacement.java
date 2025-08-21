@@ -1,4 +1,10 @@
-package pf.yozzman.risk;
+package pf.yozzman.risk.phase;
+
+import pf.yozzman.risk.model.Carte;
+import pf.yozzman.risk.model.Joueur;
+import pf.yozzman.risk.model.Pays;
+import pf.yozzman.risk.util.ConsoleReader;
+import pf.yozzman.risk.util.ConsoleWriter;
 
 public class PhaseDeplacement {
 
@@ -27,7 +33,7 @@ public class PhaseDeplacement {
 
         if (carte.deplacer(pFrom, pTo, nb)) {
             ConsoleWriter.println("Déplacement effectué.");
-            carte.afficherMiniCarte();
+            carte.afficherCarte();
         } else {
             ConsoleWriter.println("Déplacement impossible (au moins 1 troupe doit rester).");
         }
