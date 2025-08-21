@@ -3,51 +3,37 @@ package pf.yozzman.risk;
 import java.util.Scanner;
 
 public class ConsoleReader {
-	
-	private static Scanner scanner = new Scanner(System.in);
-	
-	public int demanderNombreJoueur() {
-		Integer nombreFinal = null;
+    private static Scanner scanner = new Scanner(System.in);
 
-		while (nombreFinal == null) {
-
+    public int demanderNombreJoueur() {
+        Integer nombreFinal = null;
+        while (nombreFinal == null) {
             ConsoleWriter.print("Entrez le nombre de joueurs (entre 2 et 5) : ");
-
-			try {
-
+            try {
                 int entree = Integer.parseInt(scanner.nextLine().trim());
-
                 if (entree >= 2 && entree <= 5) {
                     nombreFinal = entree;
                 } else {
-					if ( entree < 2) {
-                    ConsoleWriter.println("Il doit y avoir au moins 2 joueurs.");
-					};
-					if ( entree > 5) {
-                    ConsoleWriter.println("Il doit y avoir au maximum 5 joueurs.");
-					};
+                    if (entree < 2) ConsoleWriter.println("Il doit y avoir au moins 2 joueurs.");
+                    if (entree > 5) ConsoleWriter.println("Il doit y avoir au maximum 5 joueurs.");
                 }
-
             } catch (NumberFormatException e) {
                 ConsoleWriter.println("Entrée invalide. Veuillez entrer un nombre entier.");
             }
-		}
-		
-		return nombreFinal;
-		
-	}
-	
-	public String demanderNomJoueur(int numJoueur) {
-		String nom = null;
-		while (nom == null || nom.trim().isEmpty()) {
-			ConsoleWriter.print("Nom du joueur " + (numJoueur) + " : ");
-			nom = scanner.nextLine().trim();
-		}
-		
-		return nom;
-	}
+        }
+        return nombreFinal;
+    }
 
-	public ListeJoueur creerJoueurs(int nbJoueurs) {
+    public String demanderNomJoueur(int numJoueur) {
+        String nom = null;
+        while (nom == null || nom.trim().isEmpty()) {
+            ConsoleWriter.print("Nom du joueur " + (numJoueur) + " : ");
+            nom = scanner.nextLine().trim();
+        }
+        return nom;
+    }
+
+    public ListeJoueur creerJoueurs(int nbJoueurs) {
         ListeJoueur liste = new ListeJoueur();
         for (int i = 0; i < nbJoueurs; i++) {
             Joueur joueur = new Joueur();
@@ -56,5 +42,20 @@ public class ConsoleReader {
         }
         return liste;
     }
-	
+
+    public String lireLigne(String prompt) {
+        ConsoleWriter.print(prompt);
+        return scanner.nextLine();
+    }
+
+    public int lireInt(String prompt) {
+        while (true) {
+            ConsoleWriter.print(prompt);
+            try {
+                return Integer.parseInt(scanner.nextLine().trim());
+            } catch (Exception e) {
+                ConsoleWriter.println("Nombre invalide.");
+            }
+        }
+    }
 }
