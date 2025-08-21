@@ -8,6 +8,8 @@ public class ConsoleReader {
     public int demanderNombreJoueur() {
         Integer nombreFinal = null;
         while (nombreFinal == null) {
+            ConsoleWriter.println("Nous allons commencer une partie de RISK.");
+            ConsoleWriter.print("Combien de joueurs ? ");
             ConsoleWriter.print("Entrez le nombre de joueurs (entre 2 et 5) : ");
             try {
                 int entree = Integer.parseInt(scanner.nextLine().trim());
