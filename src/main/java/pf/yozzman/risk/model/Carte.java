@@ -1,6 +1,5 @@
 package pf.yozzman.risk.model;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +10,6 @@ import pf.yozzman.risk.util.ConsoleWriter;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
 
 public class Carte {
 
@@ -269,18 +267,17 @@ public class Carte {
 
 
     public void afficherCarte() {
-        ConsoleWriter.clear(); // Nettoyage avant l’affichage
-        // Paramètres de mise en page
-        final int COLS = 8;         // nombre de colonnes par ligne (mettre 8 comme sur l'image)
-        final int CELL_W = 26;      // largeur intérieure d'une cellule (sans les bordures)
-        final int CELL_H = 3;       // nombre de lignes de contenu par cellule (Nom, Proprio, Troupes)
+        ConsoleWriter.clear(); 
+       
+        final int COLS = 8;  
+        final int CELL_W = 26;    
+        final int CELL_H = 3; 
 
         // Helpers
         java.util.function.Function<String, String> safe = s -> s == null ? "" : s;
         java.util.function.BiFunction<String, Integer, String> clip = (s, w) -> {
             s = safe.apply(s);
             if (s.length() <= w) return s;
-            // on garde w-1 caractères + '…'
             return s.substring(0, Math.max(0, w - 1)) + "…";
         };
         java.util.function.BiFunction<String, Integer, String> pad = (s, w) -> {
@@ -291,8 +288,7 @@ public class Carte {
             return sb.toString();
         };
         java.util.function.Function<Integer, String> hLine = cols -> {
-            // ligne horizontale: +-----+-----+...
-            String unit = "-".repeat(CELL_W + 2); // 2 espaces latéraux à l'intérieur
+            String unit = "-".repeat(CELL_W + 2);
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < cols; i++) {
                 sb.append('+').append(unit);
@@ -307,91 +303,55 @@ public class Carte {
             ConsoleWriter.println("");
             ConsoleWriter.println(continent.getNom());
 
-            // Prépare la liste des cellules (une cellule par pays de ce continent)
+            // Prépare la liste des cellules
             java.util.List<Pays> paysList = continent.getPays();
             if (paysList == null || paysList.isEmpty()) {
                 ConsoleWriter.println("(aucun pays)");
                 continue;
             }
 
-            // Calcul du nombre de lignes (rows) nécessaires
+            // Calcul du nombre de lignes  nécessaires
             int total = paysList.size();
             int rows = (total + COLS - 1) / COLS;
 
             // Affichage ligne par ligne
             for (int r = 0; r < rows; r++) {
-                // ligne horizontale du haut de la rangée
                 ConsoleWriter.println(hLine.apply(COLS));
 
-                // pour chaque ligne de contenu dans la cellule (3 lignes)
                 for (int line = 0; line < CELL_H; line++) {
                     StringBuilder sb = new StringBuilder();
                     for (int c = 0; c < COLS; c++) {
                         int idx = r * COLS + c;
                         Pays p = (idx < total) ? paysList.get(idx) : null;
 
-                        // Construit le texte de la ligne demandée
                         String content = "";
                         if (p != null) {
                             if (line == 0) {
-                                // Ligne 1: Nom du pays
                                 content = p.getNom();
                             } else if (line == 1) {
-                                // Ligne 2: Propriétaire : <Nom>
                                 String proprio = (p.getProprietaire() == null) ? "--" : safe.apply(p.getProprietaire().getNom());
                                 content = "Propriétaire : " + proprio;
                             } else if (line == 2) {
-                                // Ligne 3: <n> Troupes
                                 content = p.getNombreTroupe() + " Troupes";
                             }
                         } else {
-                            content = ""; // cellule vide (remplissage)
+                            content = "";
                         }
 
-                        // dessine la cellule: | <content padded> |
                         sb.append('|').append(' ')
                           .append(pad.apply(content, CELL_W))
                           .append(' ');
-                        // la barre verticale de fin sera ajoutée après la dernière colonne
                     }
                     sb.append('|');
                     ConsoleWriter.println(sb.toString());
                 }
             }
-            // ligne horizontale de fermeture après la dernière rangée
             ConsoleWriter.println(hLine.apply(COLS));
         }
 
         ConsoleWriter.println("");
     }
 	
-//	public void afficherCarte() {
-//		
-//		ConsoleWriter.println("=== CARTE RISK (noms complets, propriétaire, troupes) ===");
-//		int maxNom = 0, maxProp = 0;
-//		for (Continent c : listeContinent) {
-//			for (Pays p : c.getPays()) {
-//				maxNom = Math.max(maxNom, p.getNom().length());
-//				String proprietaire = (p.getProprietaire() == null) ? "--" : p.getProprietaire().getNom();
-//				maxProp = Math.max(maxProp, proprietaire.length());
-//			}
-//		}
-//		maxNom = Math.min(maxNom, 28);
-//		maxProp = Math.min(maxProp, 20);
-//
-//		for (Continent continent : listeContinent) {
-//			ConsoleWriter.println("\n--- " + continent.getNom() + " ---");
-//			for (Pays pays : continent.getPays()) {
-//				String proprietaire = (pays.getProprietaire() == null) ? "--" : pays.getProprietaire().getNom();
-//				String ligne = padRight(pays.getNom(), maxNom) + " | "
-//							+ padRight(proprietaire, maxProp) + " | "
-//							+ "Troupes: " + pays.getNombreTroupe();
-//				ConsoleWriter.println(ligne);
-//			}
-//		}
-//		
-//		ConsoleWriter.println("");
-//	}
 
 	public List<Pays> getListePays() {
 		return listePays;
@@ -598,7 +558,7 @@ public class Carte {
 	                        } else if (line == 2) {
 	                            content = p.getNombreTroupe() + " Troupes";
 	                        }
-	                    } // sinon cellule vide
+	                    } 
 
 	                    sb.append('|').append(' ')
 	                      .append(pad.apply(content, CELL_W))

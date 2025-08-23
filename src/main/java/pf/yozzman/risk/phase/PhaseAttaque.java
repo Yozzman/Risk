@@ -25,13 +25,10 @@ public class PhaseAttaque {
     public void executer() {
         String choix = lecteur.lireLigne("Voulez-vous attaquer ? (o/n) ");
         while (choix.equalsIgnoreCase("o")) {
-            //String from = lecteur.lireLigne("Pays attaquant (nom exact) : ");
-            //String to = lecteur.lireLigne("Pays défenseur (nom exact) : ");
             
             String from = lecteur.lireLigne("Pays attaquant (nom exact) : ");
             Pays pFrom = carte.getPaysByName(from);
 
-            // Si le pays attaquant est valide et vous appartient, afficher seulement les voisins ennemis
             if (pFrom != null && pFrom.getProprietaire() == joueur) {
                 carte.afficherCarteVoisin(pFrom);
             }

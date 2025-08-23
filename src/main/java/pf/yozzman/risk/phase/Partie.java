@@ -50,8 +50,8 @@ public class Partie {
         carte.initialiserPays();
         carte.assignerPays(joueurs);
 
-        BarreChargement.afficherBarre("Préparation des joueurs", 50, 10);
-        BarreChargement.afficherBarre("Chargement de la carte", 50, 50);
+        BarreChargement.afficherBarre("Préparation des joueurs", 50, 01);
+        BarreChargement.afficherBarre("Chargement de la carte", 50, 10);
 
         ConsoleWriter.println("\nLe jeu peut commencer");
     }
@@ -62,7 +62,6 @@ public class Partie {
         ConsoleWriter.println("\n=== Tour " + tour + " - " + joueur.getNom() + " ===");
 
         new PhaseRenforts(carte, joueur).executer();
-        //carte.afficherCarte();
 
         carte.afficherCarteAttaquant(joueur);
         new PhaseAttaque(carte, joueur, lecteur, rnd).executer();
