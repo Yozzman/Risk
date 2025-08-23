@@ -10,19 +10,17 @@ public class Pays {
     private String voisinEst;
     private String voisinOuest;
 
-    private int nombreTroupe = 1;
+    private int nombreTroupe = 5;
     private boolean possedeJoueur;
     private Joueur proprietaire;
     private Armee armee;
 
-    // Liste d'adjacence fonctionnelle (vraies références)
     private List<Pays> voisins = new ArrayList<>();
 
     public Pays (String nom) {
         this.nom = nom;
     }
 
-    // les getters de la classe
     public String getNom() {
         return this.nom;
     }
@@ -52,7 +50,6 @@ public class Pays {
         return voisins;
     }
 
-    // Les setters de la classe
     public void setNom(String nom) {
         this.nom = nom;
     }
@@ -89,7 +86,6 @@ public class Pays {
         nombreTroupe = n;
     }
 
-    // Les methodes
     public boolean possedeTroupe() {
         return nombreTroupe > 0;
     }

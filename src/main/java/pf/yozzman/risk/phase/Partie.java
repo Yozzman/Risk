@@ -62,8 +62,9 @@ public class Partie {
         ConsoleWriter.println("\n=== Tour " + tour + " - " + joueur.getNom() + " ===");
 
         new PhaseRenforts(carte, joueur).executer();
-        carte.afficherCarte();
+        //carte.afficherCarte();
 
+        carte.afficherCarteAttaquant(joueur);
         new PhaseAttaque(carte, joueur, lecteur, rnd).executer();
         if (fin) return;
 
