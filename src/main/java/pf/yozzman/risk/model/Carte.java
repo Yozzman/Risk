@@ -237,8 +237,7 @@ public class Carte {
 	}
 
 	public int calculRenforts(Joueur joueur) {
-		int nb = Math.max(3, joueur.getPaysPossedes().size() / 3);
-		return nb;
+		return Math.max(3, joueur.getPaysPossedes().size() / 3);
 	}
 
 	public void distribuerRenfortsAuto(Joueur joueur, int renforts) {

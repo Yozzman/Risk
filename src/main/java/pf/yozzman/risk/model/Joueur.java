@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Joueur {
-    public static int nombreJoueur = 0;
+    private static int nombreJoueur = 0;
     private String nom;
     private int id;
     private List<Pays> paysPossedes = new ArrayList<>();
