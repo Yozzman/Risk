@@ -18,4 +18,12 @@ public class ConsoleWriter {
     public static void print(String content) {
         System.out.print(content);
     }
+
+    public static void delay(int time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

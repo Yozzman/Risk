@@ -1,5 +1,7 @@
 package pf.yozzman.risk.phase;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import pf.yozzman.risk.model.Carte;
@@ -11,7 +13,7 @@ import pf.yozzman.risk.util.ConsoleWriter;
 
 public class Partie {
 
-    private ListeJoueur joueurs;
+    private ListeJoueur listeJoueur;
     private Carte carte;
     private ConsoleReader lecteur;
     private Random rnd;
@@ -22,12 +24,32 @@ public class Partie {
     public void demarrer() {
         initialiserJeu();
         bouclePrincipale();
-        ConsoleWriter.println("=== FIN ===");
+        ConsoleWriter.println("Fin de la partie");
+    }
+
+    private void initialiserJeu() {
+        lecteur = new ConsoleReader();
+        rnd = new Random();
+
+        ConsoleWriter.clearAndPrintln("Bienvenue dans notre jeu RISK");
+        ConsoleWriter.println("");
+        ConsoleWriter.println("");
+
+        int nombreJoueur = lecteur.demanderNombreJoueur();
+        listeJoueur = lecteur.creerJoueurs(nombreJoueur);
+
+        carte = Carte.getInstance();
+        carte.initialiserPays();
+        carte.assignerPays(listeJoueur);
+
+        BarreChargement.afficherBarre("Préparation de la partie", 50, 10);
+
+        ConsoleWriter.println("\nLe jeu peut commencer");
     }
 
     private void bouclePrincipale() {
         while (!fin) {
-            for (Joueur joueur : joueurs) {
+            for (Joueur joueur : listeJoueur) {
                 jouerTour(joueur);
                 if (fin) break;
             }
@@ -35,39 +57,23 @@ public class Partie {
         }
     }
 
-    private void initialiserJeu() {
-        lecteur = new ConsoleReader();
-        rnd = new Random();
-
-        ConsoleWriter.clearAndPrintln("--------     Bienvenue dans notre jeu RISK    --------");
-        ConsoleWriter.println("--------                                      --------");
-        ConsoleWriter.println("");
-
-        int nombreJoueur = lecteur.demanderNombreJoueur();
-        joueurs = lecteur.creerJoueurs(nombreJoueur);
-
-        carte = new Carte();
-        carte.initialiserPays();
-        carte.assignerPays(joueurs);
-
-        BarreChargement.afficherBarre("Préparation des joueurs", 50, 01);
-        BarreChargement.afficherBarre("Chargement de la carte", 50, 10);
-
-        ConsoleWriter.println("\nLe jeu peut commencer");
-    }
+    
 
 
     private void jouerTour(Joueur joueur) {
         ConsoleWriter.clear();
         ConsoleWriter.println("\n=== Tour " + tour + " - " + joueur.getNom() + " ===");
 
-        new PhaseRenforts(carte, joueur).executer();
+        List<PhaseJeu> phases = Arrays.asList(
+            new PhaseRenforts(),
+            new PhaseAttaque(lecteur, rnd),
+            new PhaseDeplacement(lecteur)
+        );
 
-        carte.afficherCarteAttaquant(joueur);
-        new PhaseAttaque(carte, joueur, lecteur, rnd).executer();
-        if (fin) return;
-
-        new PhaseDeplacement(carte, joueur, lecteur).executer();
+        for (PhaseJeu phase : phases) {
+            phase.executer(carte, joueur);
+            if (fin) return;
+        }
 
         if (carte.estVictoire(joueur)) {
             ConsoleWriter.println("Victoire de " + joueur.getNom() + " !");

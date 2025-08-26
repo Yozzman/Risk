@@ -1,11 +1,13 @@
 package pf.yozzman.risk.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import pf.yozzman.risk.util.ConsoleReader;
 import pf.yozzman.risk.util.ConsoleWriter;
 
 import java.util.Collections;
@@ -13,9 +15,22 @@ import java.util.Comparator;
 
 public class Carte {
 
+	private static final Carte INSTANCE = new Carte();
+
 	private List<Pays> listePays = new ArrayList<>();
 	private List<Continent> listeContinent = new ArrayList<>();
 	private Map<String, Pays> indexPays = new HashMap<>();
+
+	private static final String BLUE_BACKGROUND = "\u001B[44m";
+    private static final String RESET_COLOR = "\u001B[0m";
+
+	private Carte() {
+		
+	}
+
+	public static Carte getInstance() {
+        return INSTANCE;
+    }
 
 	public void initialiserPays() {
 
@@ -27,85 +42,12 @@ public class Carte {
 		Continent asie = new Continent("Asie");
 		Continent oceanie = new Continent("Océanie");
 
-		// Helper
-		java.util.function.Consumer<String> addAN = n -> {
-			Pays p = new Pays(n);
-			addPays(p, ameriqueNord);
-		};
-		java.util.function.Consumer<String> addAS = n -> {
-			Pays p = new Pays(n);
-			addPays(p, ameriqueSud);
-		};
-		java.util.function.Consumer<String> addEU = n -> {
-			Pays p = new Pays(n);
-			addPays(p, europe);
-		};
-		java.util.function.Consumer<String> addAF = n -> {
-			Pays p = new Pays(n);
-			addPays(p, afrique);
-		};
-		java.util.function.Consumer<String> addASIE = n -> {
-			Pays p = new Pays(n);
-			addPays(p, asie);
-		};
-		java.util.function.Consumer<String> addOC = n -> {
-			Pays p = new Pays(n);
-			addPays(p, oceanie);
-		};
-
-		// Amérique du nord - 9
-		addAN.accept("Alaska");
-		addAN.accept("Territoire du Nord-Ouest");
-		addAN.accept("Groenland");
-		addAN.accept("Alberta");
-		addAN.accept("Ontario");
-		addAN.accept("Canada de l'Est");
-		addAN.accept("États-Unis de l'Ouest");
-		addAN.accept("États-Unis de l'Est");
-		addAN.accept("Amérique Centrale");
-
-		// Amérique du sud - 4
-		addAS.accept("Vénézuela");
-		addAS.accept("Brésil");
-		addAS.accept("Pérou");
-		addAS.accept("Argentine");
-
-		// Europe - 7
-		addEU.accept("Islande");
-		addEU.accept("Scandinavie");
-		addEU.accept("Grande-Bretagne");
-		addEU.accept("Russie");
-		addEU.accept("Europe du Nord");
-		addEU.accept("Europe du Sud");
-		addEU.accept("Europe de l'Ouest");
-
-		// Afrique - 6
-		addAF.accept("Afrique du Nord");
-		addAF.accept("Égypte");
-		addAF.accept("Afrique Orientale");
-		addAF.accept("Afrique Centrale");
-		addAF.accept("Afrique du Sud");
-		addAF.accept("Madagascar");
-
-		// Asie - 12
-		addASIE.accept("Afghanistan");
-		addASIE.accept("Chine");
-		addASIE.accept("Inde");
-		addASIE.accept("Irkoutsk");
-		addASIE.accept("Japan");
-		addASIE.accept("Kamchatka");
-		addASIE.accept("Moyen Orient");
-		addASIE.accept("Mongolie");
-		addASIE.accept("Asie du Sud-Est");
-		addASIE.accept("Sibérie");
-		addASIE.accept("Oural");
-		addASIE.accept("Yakoutie");
-
-		// Océanie - 4
-		addOC.accept("Australie Orientale");
-		addOC.accept("Australie Occidentale");
-		addOC.accept("Indonésie");
-		addOC.accept("Nouvelle Guinée");
+		creerEtAjouterPays(ameriqueNord, "Alaska", "Territoire du Nord-Ouest", "Groenland", "Alberta", "Ontario", "Canada de l'Est", "États-Unis de l'Ouest", "États-Unis de l'Est", "Amérique Centrale");
+		creerEtAjouterPays(ameriqueSud, "Vénézuela", "Brésil", "Pérou", "Argentine");
+		creerEtAjouterPays(europe, "Islande", "Scandinavie", "Grande-Bretagne", "Russie", "Europe du Nord", "Europe du Sud", "Europe de l'Ouest");
+		creerEtAjouterPays(afrique, "Afrique du Nord", "Égypte", "Afrique Orientale", "Afrique Centrale", "Afrique du Sud", "Madagascar");
+		creerEtAjouterPays(asie, "Afghanistan", "Chine", "Inde", "Irkoutsk", "Japan", "Kamchatka", "Moyen Orient", "Mongolie", "Asie du Sud-Est", "Sibérie", "Oural", "Yakoutie");
+		creerEtAjouterPays(oceanie, "Australie Orientale", "Australie Occidentale", "Indonésie", "Nouvelle Guinée");
 
 		listeContinent.add(ameriqueNord);
 		listeContinent.add(ameriqueSud);
@@ -114,11 +56,17 @@ public class Carte {
 		listeContinent.add(asie);
 		listeContinent.add(oceanie);
 
-		// Index pour accès rapide par nom
-		for (Pays p : listePays)
-			indexPays.put(p.getNom(), p);
+		for (Pays p : listePays) {
+        	indexPays.put(p.getNom(), p);
+    	}
+    	initialiserVoisins();
+	}
 
-		initialiserVoisins();
+	private void creerEtAjouterPays(Continent continent, String... nomsDePays) {
+		for (String nom : nomsDePays) {
+			Pays pays = new Pays.Builder(nom).build();
+			addPays(pays, continent);
+		}
 	}
 
 	private void addPays(Pays p, Continent c) {
@@ -242,116 +190,27 @@ public class Carte {
 
 	public void distribuerRenfortsAuto(Joueur joueur, int renforts) {
 		ConsoleWriter.println(joueur.getNom() + " reçoit " + renforts + " renfort(s).");
-		if (joueur.getPaysPossedes().isEmpty())
+
+		if (joueur.getPaysPossedes().isEmpty()){
 			return;
-		int idx = 0;
+		}
+	
+		Random random = new Random();
+		List<Pays> paysDuJoueur = joueur.getPaysPossedes();
+		int nombreDePays = paysDuJoueur.size();
+
+		ConsoleWriter.println("Distribution des renforts (Aléatoirement) :");
+
 		while (renforts > 0) {
-			Pays p = joueur.getPaysPossedes().get(idx % joueur.getPaysPossedes().size());
-			p.setNombreTroupe(p.getNombreTroupe() + 1);
+			int indexAleatoire = random.nextInt(nombreDePays);
+			Pays paysChoisi = paysDuJoueur.get(indexAleatoire);
+			
+        	paysChoisi.setNombreTroupe(paysChoisi.getNombreTroupe() + 1);
+        	ConsoleWriter.println("-> +1 renfort sur " + paysChoisi.getNom());
 			renforts--;
-			idx++;
 		}
 	}
-
-	private String padRight(String s, int n) {
-		if (s == null)
-			s = "";
-		if (s.length() >= n)
-			return s.substring(0, n);
-		StringBuilder sb = new StringBuilder(s);
-		while (sb.length() < n)
-			sb.append(' ');
-		return sb.toString();
-	}
-
-
-    public void afficherCarte() {
-        ConsoleWriter.clear(); 
-       
-        final int COLS = 8;  
-        final int CELL_W = 26;    
-        final int CELL_H = 3; 
-
-        // Helpers
-        java.util.function.Function<String, String> safe = s -> s == null ? "" : s;
-        java.util.function.BiFunction<String, Integer, String> clip = (s, w) -> {
-            s = safe.apply(s);
-            if (s.length() <= w) return s;
-            return s.substring(0, Math.max(0, w - 1)) + "…";
-        };
-        java.util.function.BiFunction<String, Integer, String> pad = (s, w) -> {
-            s = safe.apply(s);
-            String c = clip.apply(s, w);
-            StringBuilder sb = new StringBuilder(c);
-            while (sb.length() < w) sb.append(' ');
-            return sb.toString();
-        };
-        java.util.function.Function<Integer, String> hLine = cols -> {
-            String unit = "-".repeat(CELL_W + 2);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < cols; i++) {
-                sb.append('+').append(unit);
-            }
-            sb.append('+');
-            return sb.toString();
-        };
-
-        ConsoleWriter.println("=== CARTE RISK ===");
-
-        for (Continent continent : listeContinent) {
-            ConsoleWriter.println("");
-            ConsoleWriter.println(continent.getNom());
-
-            // Prépare la liste des cellules
-            java.util.List<Pays> paysList = continent.getPays();
-            if (paysList == null || paysList.isEmpty()) {
-                ConsoleWriter.println("(aucun pays)");
-                continue;
-            }
-
-            // Calcul du nombre de lignes  nécessaires
-            int total = paysList.size();
-            int rows = (total + COLS - 1) / COLS;
-
-            // Affichage ligne par ligne
-            for (int r = 0; r < rows; r++) {
-                ConsoleWriter.println(hLine.apply(COLS));
-
-                for (int line = 0; line < CELL_H; line++) {
-                    StringBuilder sb = new StringBuilder();
-                    for (int c = 0; c < COLS; c++) {
-                        int idx = r * COLS + c;
-                        Pays p = (idx < total) ? paysList.get(idx) : null;
-
-                        String content = "";
-                        if (p != null) {
-                            if (line == 0) {
-                                content = p.getNom();
-                            } else if (line == 1) {
-                                String proprio = (p.getProprietaire() == null) ? "--" : safe.apply(p.getProprietaire().getNom());
-                                content = "Propriétaire : " + proprio;
-                            } else if (line == 2) {
-                                content = p.getNombreTroupe() + " Troupes";
-                            }
-                        } else {
-                            content = "";
-                        }
-
-                        sb.append('|').append(' ')
-                          .append(pad.apply(content, CELL_W))
-                          .append(' ');
-                    }
-                    sb.append('|');
-                    ConsoleWriter.println(sb.toString());
-                }
-            }
-            ConsoleWriter.println(hLine.apply(COLS));
-        }
-
-        ConsoleWriter.println("");
-    }
 	
-
 	public List<Pays> getListePays() {
 		return listePays;
 	}
@@ -362,6 +221,14 @@ public class Carte {
 
 	public Pays getPaysByName(String nom) {
 		return indexPays.get(nom);
+	}
+
+	public Pays getPaysById(int id) {
+		for (Pays pays : listePays) {
+			if (pays.getId() == id)
+				return pays;
+		}
+		return null;
 	}
 
 	public boolean attaquer(Pays attaquant, Pays defense, Random rnd) {
@@ -386,37 +253,72 @@ public class Carte {
 		a.sort(Comparator.reverseOrder());
 		d.sort(Comparator.reverseOrder());
 
-		ConsoleWriter.println("Attaque: " + attaquant.getNom() + " (" + desAtt + " dés) contre " + defense.getNom()
-				+ " (" + desDef + " dés)");
-		ConsoleWriter.println("Dés attaquant: " + a + " | Défenseur: " + d);
+		ConsoleWriter.println("\n--- Début de la bataille ---\n");
+		ConsoleWriter.delay(100);
+		ConsoleWriter.println("Attaque : " + attaquant.getNom() + " (" + desAtt + " dés) vs " + defense.getNom() + " (" + desDef + " dés)");
+		ConsoleWriter.delay(100);
+		ConsoleWriter.println("Dés de l'attaquant : " + a);
+		ConsoleWriter.delay(100);
+		ConsoleWriter.println("Dés du défenseur   : " + d);
+		ConsoleWriter.delay(100);
+		ConsoleWriter.println("----------------------------\n");
 
 		int comparaisons = Math.min(a.size(), d.size());
+		int pertesAttaquant = 0;
+		int pertesDefenseur = 0;
+
 		for (int i = 0; i < comparaisons; i++) {
 			if (a.get(i) > d.get(i)) {
-				defense.setNombreTroupe(defense.getNombreTroupe() - 1);
+				pertesDefenseur++;
+				ConsoleWriter.delay(100);
+				ConsoleWriter.println("-> Dé " + (i+1) + " : L'attaquant (" + a.get(i) + ") gagne contre le défenseur (" + d.get(i) + "). Le défenseur perd 1 troupe.");
 			} else {
-				attaquant.setNombreTroupe(attaquant.getNombreTroupe() - 1);
+				pertesAttaquant++;
+				ConsoleWriter.delay(100);
+				ConsoleWriter.println("-> Dé " + (i+1) + " : Le défenseur (" + d.get(i) + ") gagne contre l'attaquant (" + a.get(i) + "). L'attaquant perd 1 troupe.");
 			}
 		}
 
-		if (defense.getNombreTroupe() <= 0) {
+		attaquant.setNombreTroupe(attaquant.getNombreTroupe() - pertesAttaquant);
+		defense.setNombreTroupe(defense.getNombreTroupe() - pertesDefenseur);
+		
+		ConsoleWriter.delay(100);
+		ConsoleWriter.println("--- Résultat de la bataille ---");
+		ConsoleWriter.println("Pertes de l'attaquant : " + pertesAttaquant);
+		ConsoleWriter.println("Pertes du défenseur   : " + pertesDefenseur);
+		ConsoleWriter.println(attaquant.getNom() + " a maintenant " + attaquant.getNombreTroupe() + " troupes.");
+		ConsoleWriter.println(defense.getNom() + " a maintenant " + defense.getNombreTroupe() + " troupes.");
+		ConsoleWriter.println("-------------------------------\n");
+
+		 if (defense.getNombreTroupe() <= 0) {
+			ConsoleWriter.println(">>> Territoire conquis ! " + attaquant.getNom() + " a vaincu toutes les troupes de " + defense.getNom() + " !");
 
 			Joueur jAtt = attaquant.getProprietaire();
 			Joueur jDef = defense.getProprietaire();
+
+			// Mise à jour des propriétaires
 			jDef.getPaysPossedes().remove(defense);
 			defense.setProprietaire(jAtt);
 			jAtt.addPaysPossede(defense);
-			defense.setPossedeJoueur(true);
+			
+			// Déplacement des troupes sur le nouveau territoire
+			int troupesAttaquantesRestantes = attaquant.getNombreTroupe();
+			ConsoleWriter.println("\nIl y a " + troupesAttaquantesRestantes + " troupe(s) restantes sur " + attaquant.getNom() + "\nCombien de troupe(s) déplacer sur " + defense.getNom() + " ?");
+			int troupesADeplacer = ConsoleReader.lireInt("");
+			
+			attaquant.setNombreTroupe(troupesAttaquantesRestantes - troupesADeplacer);
+			defense.setNombreTroupe(troupesADeplacer);
 
-			int deplace = Math.min(desAtt, attaquant.getNombreTroupe() - 1);
-			deplace = Math.max(deplace, 1);
-			attaquant.setNombreTroupe(attaquant.getNombreTroupe() - deplace);
-			defense.setNombreTroupe(deplace);
+			ConsoleWriter.println(jAtt.getNom() + " a déplacé " + troupesADeplacer + " troupe(s) sur " + defense.getNom() + ".");
+			
+			ConsoleWriter.println(attaquant.getNom() + " a maintenant " + attaquant.getNombreTroupe() + " troupes.");
+			ConsoleWriter.println(defense.getNom() + " a maintenant " + defense.getNombreTroupe() + " troupes.");
 
-			ConsoleWriter.println("Conquête de " + defense.getNom() + " !");
 			return true;
 		}
+
 		return false;
+
 	}
 
 	public boolean deplacer(Pays from, Pays to, int nb) {
@@ -439,23 +341,6 @@ public class Carte {
 				return false;
 		}
 		return true;
-	}
-
-	public void afficherCarteAttaquant(Joueur joueur) {
-	    ConsoleWriter.clear();
-	    
-	    Map<Continent, List<Pays>> map = new HashMap<>();
-	    for (Continent c : listeContinent) {
-	        List<Pays> subset = new ArrayList<>();
-	        for (Pays p : c.getPays()) {
-	            if (p.getProprietaire() == joueur) {
-	                subset.add(p);
-	            }
-	        }
-	        map.put(c, subset);
-	    }
-	    ConsoleWriter.println("=== VOS PAYS (attaquant) ===");
-	    afficherGrilleParContinent(map);
 	}
 
 	public void afficherCarteVoisin(Pays attaquant) {
@@ -491,87 +376,45 @@ public class Carte {
 	    }
 
 	    ConsoleWriter.println("=== PAYS ENNEMIS VOISINS (" + attaquant.getNom() + ") ===");
-	    afficherGrilleParContinent(map);
+	    afficherCarte();
 	}
 
+	public void afficherCarte() {
+        ConsoleWriter.println("");
+        ConsoleWriter.println("=== Carte du Monde ===");
+        ConsoleWriter.println("");
 
-	private void afficherGrilleParContinent(Map<Continent, List<Pays>> filtres) {
+        for (Pays p : indexPays.values()) {
+            StringBuilder ligne = new StringBuilder();
+            ligne.append(p.getNom())
+                 .append(" (Propriétaire: ")
+                 .append(p.getProprietaire().getNom())
+                 .append(" - Troupe : ")
+				 .append(p.getNombreTroupe())
+                 .append(") : ");
 
-	    final int COLS = 8;
-	    final int CELL_W = 26;
-	    final int CELL_H = 3;
+            List<Pays> voisins = p.getVoisins();
+            for (Pays voisin : voisins) {
+                ligne.append(voisin.getNom()).append(", ");
+            }
 
-	    java.util.function.Function<String, String> safe = s -> s == null ? "" : s;
-	    java.util.function.BiFunction<String, Integer, String> clip = (s, w) -> {
-	        s = safe.apply(s);
-	        if (s.length() <= w) return s;
-	        return s.substring(0, Math.max(0, w - 1)) + "…";
-	    };
-	    java.util.function.BiFunction<String, Integer, String> pad = (s, w) -> {
-	        s = safe.apply(s);
-	        String c = clip.apply(s, w);
-	        StringBuilder sb = new StringBuilder(c);
-	        while (sb.length() < w) sb.append(' ');
-	        return sb.toString();
-	    };
-	    java.util.function.Function<Integer, String> hLine = cols -> {
-	        String unit = "-".repeat(CELL_W + 2);
-	        StringBuilder sb = new StringBuilder();
-	        for (int i = 0; i < cols; i++) {
-	            sb.append('+').append(unit);
-	        }
-	        sb.append('+');
-	        return sb.toString();
-	    };
+            // Supprimer la dernière virgule et espace
+            if (!voisins.isEmpty()) {
+                ligne.setLength(ligne.length() - 2);
+            }
 
-	    ConsoleWriter.println("=== CARTE ===");
-	    for (Continent continent : listeContinent) {
-	        ConsoleWriter.println("");
-	        ConsoleWriter.println(continent.getNom());
+            ConsoleWriter.println(ligne.toString());
+        }
 
-	        List<Pays> paysList = filtres.getOrDefault(continent, new ArrayList<>());
-	        if (paysList == null || paysList.isEmpty()) {
-	            ConsoleWriter.println("(aucun pays)");
-	            continue;
-	        }
+        ConsoleWriter.println("");
 
-	        int total = paysList.size();
-	        int rows = (total + COLS - 1) / COLS;
+		List<String> asciiMap = new ArrayList<>(
+			Arrays.asList(
+            BLUE_BACKGROUND + " CARTE DU MONDE " + RESET_COLOR
+        ));
 
-	        for (int r = 0; r < rows; r++) {
-	            ConsoleWriter.println(hLine.apply(COLS));
+        asciiMap.forEach(ConsoleWriter::println);
+    }
 
-	            for (int line = 0; line < CELL_H; line++) {
-	                StringBuilder sb = new StringBuilder();
-	                for (int c = 0; c < COLS; c++) {
-	                    int idx = r * COLS + c;
-	                    Pays p = (idx < total) ? paysList.get(idx) : null;
-
-	                    String content = "";
-	                    if (p != null) {
-	                        if (line == 0) {
-	                            content = p.getNom();
-	                        } else if (line == 1) {
-	                            String proprio = (p.getProprietaire() == null) ? "--" : safe.apply(p.getProprietaire().getNom());
-	                            content = "Propriétaire : " + proprio;
-	                        } else if (line == 2) {
-	                            content = p.getNombreTroupe() + " Troupes";
-	                        }
-	                    } 
-
-	                    sb.append('|').append(' ')
-	                      .append(pad.apply(content, CELL_W))
-	                      .append(' ');
-	                }
-	                sb.append('|');
-	                ConsoleWriter.println(sb.toString());
-	            }
-
-	            ConsoleWriter.println(hLine.apply(COLS));
-	        }
-
-	        ConsoleWriter.println("");
-	    }
-	}
 
 }

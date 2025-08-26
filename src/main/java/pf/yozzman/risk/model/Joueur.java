@@ -5,13 +5,20 @@ import java.util.List;
 
 public class Joueur {
     private static int nombreJoueur = 0;
+    private static int indexCouleur = 0;
+
     private String nom;
     private int id;
+    private Couleur couleur;
     private List<Pays> paysPossedes = new ArrayList<>();
 
     public Joueur () {
         nombreJoueur++;
         this.id = nombreJoueur;
+        
+        Couleur[] couleurs = Couleur.values();
+        this.couleur = couleurs[indexCouleur % couleurs.length];
+        indexCouleur++;
     }
 
     public String getNom() {
@@ -24,6 +31,10 @@ public class Joueur {
 
     public int getId() {
         return this.id;
+    }
+
+    public Couleur getCouleur() {
+        return this.couleur;
     }
 
     public List<Pays> getPaysPossedes() {

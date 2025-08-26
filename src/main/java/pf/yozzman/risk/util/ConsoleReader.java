@@ -53,7 +53,7 @@ public class ConsoleReader {
         return scanner.nextLine();
     }
 
-    public int lireInt(String prompt) {
+    public static int lireInt(String prompt) {
         while (true) {
             ConsoleWriter.print(prompt);
             try {
@@ -62,5 +62,10 @@ public class ConsoleReader {
                 ConsoleWriter.println("Nombre invalide.");
             }
         }
+    }
+
+    public void pause() {
+        ConsoleWriter.print("\nAppuyez sur Entrée pour continuer...");
+        scanner.nextLine();
     }
 }
