@@ -11,13 +11,14 @@ Implémentation console du jeu RISK avec gestion des tours, des phases (renforts
 
 ## Fonctionnalités
 
-***Gestion de Partie** : Supporte des parties de 2 à 5 joueurs avec saisie personnalisée des noms.
-***Cycle de Jeu Complet** : Implémentation de la boucle de jeu principale avec gestion des tours.
-***Phases de Jeu Détaillées** :
-    ***Renforts** : Calcul et distribution automatique des troupes en début de tour.
-    ***Attaque** : Mécanique de combat complète, incluant la validation des règles (voisinage, nombre de troupes minimum) et la résolution des lancers de dés.
-    ***Déplacement** : Mouvement stratégique des troupes entre territoires alliés en fin de tour.
-***Interface Console Interactive** : Un affichage clair de la carte du monde, des informations du tour et des actions possibles, avec des codes couleur pour différencier les joueurs.
+- **Gestion de Partie** : Supporte des parties de 2 à 5 joueurs avec saisie personnalisée des noms.
+- **Cycle de Jeu Complet** : Implémentation de la boucle de jeu principale avec gestion des tours.
+- **Phases de Jeu Détaillées** :
+  - **Renforts** : Calcul et distribution automatique des troupes en début de tour.
+  - **Attaque** : Mécanique de combat complète, incluant la validation des règles (voisinage, nombre de troupes minimum) et la résolution des lancers de dés.
+  - **Déplacement** : Mouvement stratégique des troupes entre territoires alliés en fin de tour.
+
+- **Interface Console Interactive** : Un affichage clair de la carte du monde, des informations du tour et des actions possibles, avec des codes couleur pour différencier les joueurs.
 
 ## Architecture (résumé et simple)
 
@@ -40,6 +41,126 @@ Le projet est organisé en trois packages principaux, suivant une séparation cl
 
 - **Stratégie** : Le déroulement d'un tour est géré via le pattern Stratégie. L'interface `PhaseJeu` définit un contrat commun, et chaque phase (`PhaseRenforts`, `PhaseAttaque`, `PhaseDeplacement`) en est une implémentation concrète. Cela rend le code très modulaire et facile à étendre.
 
+## Diagramme des classes
+
+```mermaid
+    classDiagram
+    direction LR
+
+    class Jeu {
+        +main(String[] args)
+    }
+
+    class Partie {
+        -listeJoueur: ListeJoueur
+        -carte: Carte
+        -fin: boolean
+        -tour: int
+        -phaseRenforts: PhaseJeu
+        -phaseAttaque: PhaseJeu
+        -phaseDeplacement: PhaseJeu
+        +demarrer()
+        +jouerTour(Joueur)
+    }
+
+    class Carte {
+        <<Singleton>>
+        -INSTANCE: Carte
+        -listePays: List~Pays~
+        -listeContinent: List~Continent~
+        +getInstance(): Carte
+        +assignerPays(ListeJoueur)
+        +calculRenforts(Joueur): int
+        +attaquer(Pays, Pays)
+        +deplacer(Pays, Pays, int)
+        +estVictoire(Joueur): boolean
+    }
+
+    class Continent {
+        -nom: String
+        -listePays: List~Pays~
+        +addPays(Pays)
+    }
+
+    class Pays {
+        -id: int
+        -nom: String
+        -nombreTroupe: int
+        -proprietaire: Joueur
+        -voisins: List~Pays~
+        +setProprietaire(Joueur)
+        +setNombreTroupe(int)
+        +addVoisin(Pays)
+        +estVoisin(Pays): boolean
+    }
+
+    class Joueur {
+        -nom: String
+        -id: int
+        -couleur: Couleur
+        -paysPossedes: List~Pays~
+        +addPaysPossede(Pays)
+    }
+
+    class ListeJoueur {
+        -joueurs: List~Joueur~
+        +add(Joueur)
+        +get(int): Joueur
+    }
+
+    class Couleur {
+        <<Enumeration>>
+        VERT
+        JAUNE
+        ROUGE
+        BLEU
+        MAGENTA
+    }
+
+    class Armee {
+        -nom: String
+        -listeTroupe: List~Troupe~
+        +ajouterTroupe(Troupe)
+    }
+
+    class Troupe {
+      -nom: String
+      -valeur: int
+    }
+
+    class PhaseJeu {
+        <<Interface>>
+        +executer(Carte, Joueur, int)
+    }
+
+    class PhaseAttaque {
+        +executer(Carte, Joueur, int)
+    }
+
+    class PhaseDeplacement {
+        +executer(Carte, Joueur, int)
+    }
+
+    class PhaseRenforts {
+        +executer(Carte, Joueur, int)
+    }
+
+    subgraph util
+        class ConsoleReader {
+            <<Utility>>
+            +demanderNombreJoueur(): int
+            +creerJoueurs(int): ListeJoueur
+            +lireInt(String): int
+        }
+        class ConsoleWriter {
+            <<Utility>>
+            +println(String)
+            +clear()
+        }
+    end
+
+```
+
 ## Prérequis et Installation
 
 - Java 17+
@@ -55,12 +176,12 @@ Cloner le projet:
 
 ## Build & Exécution
 
-1.**Compiler le projet avec Maven :**
+- **Compiler le projet avec Maven :**
 
 ```mvn clean -U install test-compile```  
-Cette commande générera le fichier `.jar` exécutable dans le dossier `target/`.
+Cette commande générera le fichier `.jar` exécutable dans le dossier `target/`.  
 
-2.**Exécuter le jeu :**  
+- **Exécuter le jeu :**  
 
 Sous Windows, vous pouvez utiliser le script `execute.bat`.
 Depuis n'importe quel terminal, vous pouvez lancer le JAR directement :
