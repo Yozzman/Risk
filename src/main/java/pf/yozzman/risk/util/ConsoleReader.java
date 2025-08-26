@@ -8,12 +8,13 @@ import pf.yozzman.risk.model.ListeJoueur;
 public class ConsoleReader {
     private static Scanner scanner = new Scanner(System.in);
 
-    public int demanderNombreJoueur() {
+    public static int demanderNombreJoueur() {
         Integer nombreFinal = null;
         while (nombreFinal == null) {
-            ConsoleWriter.println("Nous allons commencer une partie de RISK.");
-            ConsoleWriter.print("Combien de joueurs ? ");
-            ConsoleWriter.print("Entrez le nombre de joueurs (entre 2 et 5) : ");
+            ConsoleWriter.println("Nous allons commencer.");
+            ConsoleWriter.print("Combien de joueurs veulent jouer? ");
+            ConsoleWriter.print("\nSeulement un nombre entre 2 et 5 joueurs peuvent jouer au jeu.");
+            ConsoleWriter.print("\nEntrer un nombre : ");
             try {
                 int entree = Integer.parseInt(scanner.nextLine().trim());
                 if (entree >= 2 && entree <= 5) {
@@ -29,16 +30,16 @@ public class ConsoleReader {
         return nombreFinal;
     }
 
-    public String demanderNomJoueur(int numJoueur) {
+    public static String demanderNomJoueur(int numJoueur) {
         String nom = null;
         while (nom == null || nom.trim().isEmpty()) {
-            ConsoleWriter.print("Nom du joueur " + (numJoueur) + " : ");
+            ConsoleWriter.print("\nEntrez le nom du joueur " + (numJoueur) + " : ");
             nom = scanner.nextLine().trim();
         }
         return nom;
     }
 
-    public ListeJoueur creerJoueurs(int nbJoueurs) {
+    public static ListeJoueur creerJoueurs(int nbJoueurs) {
         ListeJoueur liste = new ListeJoueur();
         for (int i = 0; i < nbJoueurs; i++) {
             Joueur joueur = new Joueur();
@@ -48,7 +49,7 @@ public class ConsoleReader {
         return liste;
     }
 
-    public String lireLigne(String prompt) {
+    public static String lireLigne(String prompt) {
         ConsoleWriter.print(prompt);
         return scanner.nextLine();
     }
@@ -64,7 +65,7 @@ public class ConsoleReader {
         }
     }
 
-    public void pause() {
+    public static void pause() {
         ConsoleWriter.print("\nAppuyez sur Entrée pour continuer...");
         scanner.nextLine();
     }

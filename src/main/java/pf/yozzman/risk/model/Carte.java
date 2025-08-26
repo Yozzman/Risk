@@ -1,11 +1,12 @@
 package pf.yozzman.risk.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import pf.yozzman.risk.util.ConsoleReader;
 import pf.yozzman.risk.util.ConsoleWriter;
@@ -21,7 +22,7 @@ public class Carte {
 	private List<Continent> listeContinent = new ArrayList<>();
 	private Map<String, Pays> indexPays = new HashMap<>();
 
-	private static final String BLUE_BACKGROUND = "\u001B[44m";
+	private static final String GREEN_BACKGROUD = "\u001B[32m";
     private static final String RESET_COLOR = "\u001B[0m";
 
 	private Carte() {
@@ -189,7 +190,10 @@ public class Carte {
 	}
 
 	public void distribuerRenfortsAuto(Joueur joueur, int renforts) {
+		ConsoleWriter.delay(100);
 		ConsoleWriter.println(joueur.getNom() + " reçoit " + renforts + " renfort(s).");
+		
+		ConsoleWriter.delay(1000);
 
 		if (joueur.getPaysPossedes().isEmpty()){
 			return;
@@ -200,12 +204,15 @@ public class Carte {
 		int nombreDePays = paysDuJoueur.size();
 
 		ConsoleWriter.println("Distribution des renforts (Aléatoirement) :");
-
+		
+		ConsoleWriter.delay(1000);
 		while (renforts > 0) {
 			int indexAleatoire = random.nextInt(nombreDePays);
 			Pays paysChoisi = paysDuJoueur.get(indexAleatoire);
 			
         	paysChoisi.setNombreTroupe(paysChoisi.getNombreTroupe() + 1);
+			
+			ConsoleWriter.delay(250);
         	ConsoleWriter.println("-> +1 renfort sur " + paysChoisi.getNom());
 			renforts--;
 		}
@@ -231,7 +238,7 @@ public class Carte {
 		return null;
 	}
 
-	public boolean attaquer(Pays attaquant, Pays defense, Random rnd) {
+	public boolean attaquer(Pays attaquant, Pays defense, Random rnd, int tour, Joueur joueur, Carte carte) {
 		if (attaquant.getProprietaire() == null || defense.getProprietaire() == null)
 			return false;
 		if (attaquant.getProprietaire() == defense.getProprietaire())
@@ -253,7 +260,10 @@ public class Carte {
 		a.sort(Comparator.reverseOrder());
 		d.sort(Comparator.reverseOrder());
 
-		ConsoleWriter.println("\n--- Début de la bataille ---\n");
+			String phase = "Phase d'attaque";
+            carte.afficherCarteEtInfoTour(tour, joueur, phase);
+			
+		ConsoleWriter.println("--- Début de la bataille ---\n");
 		ConsoleWriter.delay(100);
 		ConsoleWriter.println("Attaque : " + attaquant.getNom() + " (" + desAtt + " dés) vs " + defense.getNom() + " (" + desDef + " dés)");
 		ConsoleWriter.delay(100);
@@ -261,7 +271,7 @@ public class Carte {
 		ConsoleWriter.delay(100);
 		ConsoleWriter.println("Dés du défenseur   : " + d);
 		ConsoleWriter.delay(100);
-		ConsoleWriter.println("----------------------------\n");
+		ConsoleWriter.println("\n----------------------------\n");
 
 		int comparaisons = Math.min(a.size(), d.size());
 		int pertesAttaquant = 0;
@@ -283,7 +293,7 @@ public class Carte {
 		defense.setNombreTroupe(defense.getNombreTroupe() - pertesDefenseur);
 		
 		ConsoleWriter.delay(100);
-		ConsoleWriter.println("--- Résultat de la bataille ---");
+		ConsoleWriter.println("\n--- Résultat de la bataille ---\n");
 		ConsoleWriter.println("Pertes de l'attaquant : " + pertesAttaquant);
 		ConsoleWriter.println("Pertes du défenseur   : " + pertesDefenseur);
 		ConsoleWriter.println(attaquant.getNom() + " a maintenant " + attaquant.getNombreTroupe() + " troupes.");
@@ -343,78 +353,104 @@ public class Carte {
 		return true;
 	}
 
-	public void afficherCarteVoisin(Pays attaquant) {
-	    ConsoleWriter.clear();
-	    if (attaquant == null) {
-	        ConsoleWriter.println("Pays attaquant invalide.");
-	        return;
-	    }
-	    Joueur proprietaire = attaquant.getProprietaire();
-	    if (proprietaire == null) {
-	        ConsoleWriter.println("Le pays attaquant n'a pas de propriétaire.");
-	        return;
-	    }
+	public void afficherCarte() {
+		Set<Joueur> joueursActifs = new HashSet<>();
+		for (Pays pays : this.listePays) {
+			if (pays.getProprietaire() != null) {
+				joueursActifs.add(pays.getProprietaire());
+			}
+		}
+		List<Joueur> sortedJoueurs = new ArrayList<>(joueursActifs);
+		sortedJoueurs.sort(Comparator.comparingInt(Joueur::getId));
+		ConsoleWriter.clear();
+		ConsoleWriter.println("\n" + GREEN_BACKGROUD + "=========================================== CARTE DU MONDE ============================================" + RESET_COLOR);
 
-	    Map<Continent, List<Pays>> map = new HashMap<>();
-	    
-	    List<Pays> voisinsEnnemis = new ArrayList<>();
-	    for (Object o : attaquant.getVoisins()) {
-	        Pays v = (Pays) o;
-	        if (v.getProprietaire() != null && v.getProprietaire() != proprietaire) {
-	            voisinsEnnemis.add(v);
-	        }
-	    }
+		for (Continent continent : listeContinent) {
+			ConsoleWriter.println("\n--- " + continent.getNom() + " ---");
+			
+			StringBuilder lineBuilder = new StringBuilder();
+			int paysParLigne = 0;
 
-	    for (Continent c : listeContinent) {
-	        List<Pays> subset = new ArrayList<>();
-	        for (Pays p : voisinsEnnemis) {
-	            if (c.getPays().contains(p)) {
-	                subset.add(p);
-	            }
-	        }
-	        map.put(c, subset);
-	    }
+			for (Pays pays : continent.getPays()) {
+				Joueur proprietaire = pays.getProprietaire();
+				String couleurAnsi = (proprietaire != null) ? proprietaire.getCouleur().getCodeAscii() : "";
 
-	    ConsoleWriter.println("=== PAYS ENNEMIS VOISINS (" + attaquant.getNom() + ") ===");
-	    afficherCarte();
+				String infoPays = String.format("ID %-2d | %-28s (%d troupes)", 
+												pays.getId(), 
+												pays.getNom(), 
+												pays.getNombreTroupe());
+				
+				lineBuilder.append(couleurAnsi)
+						.append(String.format("%-55s", infoPays))
+						.append(RESET_COLOR);
+				
+				paysParLigne++;
+				if (paysParLigne % 2 == 0) {
+					ConsoleWriter.println(lineBuilder.toString());
+					lineBuilder.setLength(0);
+				}
+			}
+
+			if (lineBuilder.length() > 0) {
+				ConsoleWriter.println(lineBuilder.toString());
+			}
+		}
+
+		ConsoleWriter.println("\n" + GREEN_BACKGROUD + "----------------------------------------------- LÉGENDE -----------------------------------------------" + RESET_COLOR);
+		for (Joueur joueur : sortedJoueurs) {
+			ConsoleWriter.println(
+				joueur.getCouleur().getCodeAscii() + "■ " + joueur.getNom() + RESET_COLOR
+			);
+		}
+		ConsoleWriter.println(GREEN_BACKGROUD + "=======================================================================================================" + RESET_COLOR );
+		
 	}
 
-	public void afficherCarte() {
-        ConsoleWriter.println("");
-        ConsoleWriter.println("=== Carte du Monde ===");
-        ConsoleWriter.println("");
+	public void afficherTour(int tour, Joueur joueur, String phase) {
+			ConsoleWriter.println("----------------------------------------------- Tour " + tour + " ------------------------------------------------");
+			ConsoleWriter.println("|                                                                                                     |");
+			ConsoleWriter.println("| Tour du joueur " + joueur.getCouleur().getCodeAscii() + joueur.getNom() + RESET_COLOR + "                       --- " + phase + " ---                                       |");
+			ConsoleWriter.println("|                                                                                                     |");
+			ConsoleWriter.println("-------------------------------------------------------------------------------------------------------");
+			
+		}
 
-        for (Pays p : indexPays.values()) {
-            StringBuilder ligne = new StringBuilder();
-            ligne.append(p.getNom())
-                 .append(" (Propriétaire: ")
-                 .append(p.getProprietaire().getNom())
-                 .append(" - Troupe : ")
-				 .append(p.getNombreTroupe())
-                 .append(") : ");
+	public void afficherEnTeteTour(int tour, Joueur joueur, String phase) {
+		
+		final int LARGEUR_CONSOLE = 103;
 
-            List<Pays> voisins = p.getVoisins();
-            for (Pays voisin : voisins) {
-                ligne.append(voisin.getNom()).append(", ");
-            }
+		String ligneTour = " Tour " + tour + " ";
+		int tiretsTour = (LARGEUR_CONSOLE - ligneTour.length()) / 2;
+		String bordureTour = "-".repeat(tiretsTour) + ligneTour + "-".repeat(LARGEUR_CONSOLE - tiretsTour - ligneTour.length());
+		ConsoleWriter.println(bordureTour);
 
-            // Supprimer la dernière virgule et espace
-            if (!voisins.isEmpty()) {
-                ligne.setLength(ligne.length() - 2);
-            }
+		String texteJoueur = "Tour du joueur " + joueur.getNom();
+		String textePhase = "--- " + phase + " ---";
 
-            ConsoleWriter.println(ligne.toString());
-        }
+		String texteVisible = texteJoueur + "      " + textePhase;
+		
+		int espacesRestants = LARGEUR_CONSOLE - 4 - texteVisible.length();
+		if (espacesRestants < 0) espacesRestants = 0;
+		
+		String paddingGauche = " ".repeat(espacesRestants / 2);
+		String paddingDroit = " ".repeat(espacesRestants - espacesRestants / 2);
 
-        ConsoleWriter.println("");
+		String ligneContenu = "| " + paddingGauche 
+							+ "Tour du joueur " + joueur.getCouleur().getCodeAscii() + joueur.getNom() + RESET_COLOR
+							+ "      "
+							+ textePhase 
+							+ paddingDroit + " |";
 
-		List<String> asciiMap = new ArrayList<>(
-			Arrays.asList(
-            BLUE_BACKGROUND + " CARTE DU MONDE " + RESET_COLOR
-        ));
+		ConsoleWriter.println("|" + " ".repeat(LARGEUR_CONSOLE - 2) + "|");
+		ConsoleWriter.println(ligneContenu);
+		ConsoleWriter.println("|" + " ".repeat(LARGEUR_CONSOLE - 2) + "|");
+		ConsoleWriter.println("-".repeat(LARGEUR_CONSOLE));
+	}
 
-        asciiMap.forEach(ConsoleWriter::println);
-    }
-
+	public void afficherCarteEtInfoTour(int tour, Joueur joueur, String phase) {
+		ConsoleWriter.clear();
+		afficherCarte();
+		afficherEnTeteTour(tour, joueur, phase);
+	}
 
 }

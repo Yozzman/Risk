@@ -11,49 +11,55 @@ import pf.yozzman.risk.util.ConsoleWriter;
 
 public class PhaseAttaque implements PhaseJeu{
 
-    private final ConsoleReader lecteur;
     private final Random rnd;
+    private String phase = "Phase d'attaque";
 
-    public PhaseAttaque(ConsoleReader lecteur, Random rnd) {
-        this.lecteur = lecteur;
-        this.rnd = rnd;
+    public PhaseAttaque() {
+        this.rnd = new Random();
     }
 
     @Override
-    public void executer(Carte carte, Joueur joueur) {
+    public void executer(Carte carte, Joueur joueur, int tour) {
 
-        carte.afficherCarte();
+        carte.afficherCarteEtInfoTour(tour, joueur, this.phase);
 
-        String choix = lecteur.lireLigne("Voulez-vous attaquer ? (o/n) ");
+        String choix = ConsoleReader.lireLigne("Voulez-vous attaquer ? (o/n) ");
 
         while (choix.equalsIgnoreCase("o")) {
             
-            ConsoleWriter.clear();
+            carte.afficherCarteEtInfoTour(tour, joueur, this.phase);
+
             afficherPaysAttaquants(joueur);
 
-            int idFrom = lecteur.lireInt("Entrez l'ID du pays attaquant : ");
+            int idFrom = ConsoleReader.lireInt("Entrez l'ID du pays attaquant : ");
             Pays paysAttaquant = carte.getPaysById(idFrom);
 
             if (paysAttaquant != null && paysAttaquant.getProprietaire() == joueur) {
+
+                carte.afficherCarteEtInfoTour(tour, joueur, this.phase);
                 afficherPaysVoisins(paysAttaquant, joueur);
             }
 
-            int idTo = lecteur.lireInt("Entrez l'ID du pays à attaqué : ");
+            int idTo = ConsoleReader.lireInt("Entrez l'ID du pays à attaqué : ");
             Pays paysAttaquer = carte.getPaysById(idTo);
 
             if (!verifierConditions(paysAttaquant, paysAttaquer, joueur)) {
-                choix = lecteur.lireLigne("Autre attaque ? (o/n) ");
+
+                carte.afficherCarteEtInfoTour(tour, joueur, this.phase);
+                choix = ConsoleReader.lireLigne("Voulez vous lancer une autre attaque ? (o/n) ");
                 continue;
             }
 
-            carte.attaquer(paysAttaquant, paysAttaquer, rnd);
-            lecteur.pause();
+            carte.attaquer(paysAttaquant, paysAttaquer, rnd, tour, joueur, carte);
+            ConsoleReader.pause();
 
             if (carte.estVictoire(joueur)) {
                 ConsoleWriter.println("Victoire de " + joueur.getNom() + " !");
                 break;
             }
-            choix = lecteur.lireLigne("Autre attaque ? (o/n) ");
+
+            carte.afficherCarteEtInfoTour(tour, joueur, this.phase);
+            choix = ConsoleReader.lireLigne("Voulez vous lancer une autre attaque ? (o/n) ");
         }
     }
 
@@ -75,7 +81,7 @@ public class PhaseAttaque implements PhaseJeu{
     }
 
     private void afficherPaysVoisins(Pays pays, Joueur joueur) {
-        ConsoleWriter.println("\n--- Pays voisins ennemis ---\n");
+        ConsoleWriter.println("--- Pays voisins ennemis ---\n");
         List<Pays> voisins = pays.getVoisins();
         for (Pays voisin : voisins) {
             if (voisin.getProprietaire() == joueur) {
@@ -87,7 +93,7 @@ public class PhaseAttaque implements PhaseJeu{
     }
 
     private void afficherPaysAttaquants(Joueur joueur) {
-        ConsoleWriter.println("\n--- Vos pays prêts à l'attaque ---");
+        ConsoleWriter.println("--- Vos pays prêts à l'attaque ---\n");
         boolean peutAttaquer = false;
 
         for (Pays pays : joueur.getPaysPossedes()) {
