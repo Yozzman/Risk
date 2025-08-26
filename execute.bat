@@ -1,0 +1,1 @@
+java -cp target/Risk-0.0.1.jar pf.yozzman.risk.Jeu
