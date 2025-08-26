@@ -11,61 +11,63 @@ Implémentation console du jeu RISK avec gestion des tours, des phases (renforts
 
 ## Fonctionnalités
 
-*   **Gestion de Partie** : Supporte des parties de 2 à 5 joueurs avec saisie personnalisée des noms.
-*   **Cycle de Jeu Complet** : Implémentation de la boucle de jeu principale avec gestion des tours.
-*   **Phases de Jeu Détaillées** :
-    *   **Renforts** : Calcul et distribution automatique des troupes en début de tour.
-    *   **Attaque** : Mécanique de combat complète, incluant la validation des règles (voisinage, nombre de troupes minimum) et la résolution des lancers de dés.
-    *   **Déplacement** : Mouvement stratégique des troupes entre territoires alliés en fin de tour.
-*   **Interface Console Interactive** : Un affichage clair de la carte du monde, des informations du tour et des actions possibles, avec des codes couleur pour différencier les joueurs.
-
+***Gestion de Partie** : Supporte des parties de 2 à 5 joueurs avec saisie personnalisée des noms.
+***Cycle de Jeu Complet** : Implémentation de la boucle de jeu principale avec gestion des tours.
+***Phases de Jeu Détaillées** :
+    ***Renforts** : Calcul et distribution automatique des troupes en début de tour.
+    ***Attaque** : Mécanique de combat complète, incluant la validation des règles (voisinage, nombre de troupes minimum) et la résolution des lancers de dés.
+    ***Déplacement** : Mouvement stratégique des troupes entre territoires alliés en fin de tour.
+***Interface Console Interactive** : Un affichage clair de la carte du monde, des informations du tour et des actions possibles, avec des codes couleur pour différencier les joueurs.
 
 ## Architecture (résumé et simple)
 
 Le projet est organisé en trois packages principaux, suivant une séparation claire des responsabilités :
 
-*   `pf.yozzman.risk.model` : Contient les classes de données qui représentent l'état du jeu (`Joueur`, `Pays`, `Carte`, `Continent`, etc.).
-*   `pf.yozzman.risk.phase` : Définit la logique et le déroulement du jeu. `Partie` orchestre le flux global, tandis que les autres classes (`PhaseAttaque`, etc.) gèrent les actions spécifiques à chaque phase du tour.
-*   `pf.yozzman.risk.util` : Fournit des classes utilitaires pour gérer les interactions avec la console (`ConsoleReader`, `ConsoleWriter`) et améliorer l'expérience utilisateur (`BarreChargement`).
+- `pf.yozzman.risk.model` : Contient les classes de données qui représentent l'état du jeu (`Joueur`, `Pays`, `Carte`, `Continent`, etc.).
+- `pf.yozzman.risk.phase` : Définit la logique et le déroulement du jeu. `Partie` orchestre le flux global, tandis que les autres classes (`PhaseAttaque`, etc.) gèrent les actions spécifiques à chaque phase du tour.
+- `pf.yozzman.risk.util` : Fournit des classes utilitaires pour gérer les interactions avec la console (`ConsoleReader`, `ConsoleWriter`) et améliorer l'expérience utilisateur (`BarreChargement`).
 
-#### Patterns de Création
-*   **Singleton** : La classe `Carte` est un Singleton. Cela garantit qu'une seule et unique instance de la carte du monde existe tout au long de la partie, assurant ainsi la cohérence de l'état du jeu pour tous les joueurs et toutes les phases.
-*   **Builder** : La classe `Pays` utilise le pattern Builder pour sa construction. Cela permet une initialisation claire et lisible des objets `Pays`, qui possèdent de nombreux attributs, sans avoir recours à des constructeurs surchargés.
+### Patterns de Création
 
-#### Pattern de Structure
-*   **Façade** : La classe `Partie` agit comme une Façade pour le moteur de jeu. Elle fournit une interface simple (`demarrer()`) qui masque toute la complexité interne de l'initialisation, de la boucle de jeu et de l'enchaînement des phases.
+- **Singleton** : La classe `Carte` est un Singleton. Cela garantit qu'une seule et unique instance de la carte du monde existe tout au long de la partie, assurant ainsi la cohérence de l'état du jeu pour tous les joueurs et toutes les phases.
+- **Builder** : La classe `Pays` utilise le pattern Builder pour sa construction. Cela permet une initialisation claire et lisible des objets `Pays`, qui possèdent de nombreux attributs, sans avoir recours à des constructeurs surchargés.
 
-#### Pattern de Comportement
-*   **Stratégie** : Le déroulement d'un tour est géré via le pattern Stratégie. L'interface `PhaseJeu` définit un contrat commun, et chaque phase (`PhaseRenforts`, `PhaseAttaque`, `PhaseDeplacement`) en est une implémentation concrète. Cela rend le code très modulaire et facile à étendre.
+### Pattern de Structure
+
+- **Façade** : La classe `Partie` agit comme une Façade pour le moteur de jeu. Elle fournit une interface simple (`demarrer()`) qui masque toute la complexité interne de l'initialisation, de la boucle de jeu et de l'enchaînement des phases.
+
+### Pattern de Comportement
+
+- **Stratégie** : Le déroulement d'un tour est géré via le pattern Stratégie. L'interface `PhaseJeu` définit un contrat commun, et chaque phase (`PhaseRenforts`, `PhaseAttaque`, `PhaseDeplacement`) en est une implémentation concrète. Cela rend le code très modulaire et facile à étendre.
 
 ## Prérequis et Installation
 
-*   Java 17+
-*   Maven
-*   Un terminal compatible avec les codes couleurs ANSI.
+- Java 17+
+- Maven
+- Un terminal compatible avec les codes couleurs ANSI.
 
 Pour cloner et vous placer dans le répertoire du projet :
 
 Cloner le projet:
 
-- git clone git@github.com:Yozzman/Risk.git
-- cd Risk
+- ```git clone git@github.com:Yozzman/Risk.git```
+- ```cd Risk```
 
 ## Build & Exécution
 
-1.  **Compiler le projet avec Maven :**
-    ```
-    mvn clean -U install test-compile
-    ```
-    Cette commande générera le fichier `.jar` exécutable dans le dossier `target/`.
+1.**Compiler le projet avec Maven :**
 
-2.  **Exécuter le jeu :**
-    *   Sous Windows, vous pouvez utiliser le script `execute.bat`.
-    *   Depuis n'importe quel terminal, vous pouvez lancer le JAR directement :
-        ```
-        java -jar target/Risk-1.0.0.jar 
-        ```
-        *(Note : ajustez le nom du fichier JAR si nécessaire)*
+```mvn clean -U install test-compile```  
+Cette commande générera le fichier `.jar` exécutable dans le dossier `target/`.
+
+2.**Exécuter le jeu :**  
+
+Sous Windows, vous pouvez utiliser le script `execute.bat`.
+Depuis n'importe quel terminal, vous pouvez lancer le JAR directement :
+
+```java -jar target/Risk-1.0.0.jar```
+
+(Note : ajustez le nom du fichier JAR si nécessaire)
 
 ## Exécution avec le script .bat
 

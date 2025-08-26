@@ -1,8 +1,5 @@
 package pf.yozzman.risk.phase;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import pf.yozzman.risk.model.Carte;
 import pf.yozzman.risk.model.Joueur;
 import pf.yozzman.risk.model.ListeJoueur;
